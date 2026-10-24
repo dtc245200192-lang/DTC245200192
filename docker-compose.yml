@@ -96,10 +96,11 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
 
-  # 7. Logging: Loki
+# 7. Logging: Loki
   loki:
     image: grafana/loki:2.9.0
     container_name: loki
+    user: "root"
     ports:
       - "3100:3100"
     volumes:
@@ -108,13 +109,16 @@ services:
     networks:
       - frontend-net
 
-  # 8. Logging: Promtail
+# 8. Logging: Promtail
   promtail:
     image: grafana/promtail:2.9.0
     container_name: promtail
+    user: "root"
+    restart: always
     volumes:
       - /var/log:/var/log:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - //var/run/docker.sock:/var/run/docker.sock:ro
       - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
     command: -config.file=/etc/promtail/config.yml
     networks:
